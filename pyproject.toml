@@ -1,0 +1,9 @@
+[project]
+name = "future-engineer-rl"
+version = "0.1.0"
+description = "Isaac Lab and PPO-based autonomous driving with obstacle avoidance and curriculum learning"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "tensorboard>=2.21.0",
+]

@@ -1,0 +1,861 @@
+<?xml version="1.0"?>
+
+<robot name="future_engineer">
+
+    <!-- ====================================================== -->
+    <!-- Material                                               -->
+    <!-- ====================================================== -->
+
+    <material name="body_color">
+        <color rgba="0.75 0.75 0.75 1.0"/>
+    </material>
+
+    <material name="wheel_color">
+        <color rgba="0.05 0.05 0.05 1.0"/>
+    </material>
+
+    <material name="steer_color">
+        <color rgba="0.1 0.3 0.8 1.0"/>
+    </material>
+
+    <material name="camera_color">
+        <color rgba="0.1 0.3 0.8 1.0"/>
+    </material>
+
+    <material name="tof_front_color">
+        <color rgba="0.9 0.1 0.2 1.0"/>
+    </material>
+
+    <material name="tof_side_color">
+        <color rgba="0.1 0.8 0.2 1.0"/>
+    </material>
+
+    <material name="imu_color">
+        <color rgba="0.5 0.2 0.8 1.0"/>
+    </material>
+
+
+    <!-- ====================================================== -->
+    <!-- BASE LINK                                              -->
+    <!--                                                        -->
+    <!-- 200 x 120 x 40 mm                                      -->
+    <!-- ====================================================== -->
+
+    <link name="base_link">
+
+        <visual>
+            <origin xyz="0 0 0"/>
+
+            <geometry>
+                <box size="0.20 0.12 0.04"/>
+            </geometry>
+
+            <material name="body_color"/>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0"/>
+
+            <geometry>
+                <box size="0.20 0.12 0.04"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <origin xyz="0 0 0"/>
+
+            <mass value="0.75"/>
+
+            <inertia
+                ixx="0.0010"
+                ixy="0.0"
+                ixz="0.0"
+                iyy="0.0026"
+                iyz="0.0"
+                izz="0.0034"/>
+        </inertial>
+
+    </link>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT BUMPER                                           -->
+    <!-- ====================================================== -->
+
+    <link name="front_bumper_link">
+
+        <visual>
+            <geometry>
+                <box size="0.02 0.12 0.02"/>
+            </geometry>
+
+            <material name="body_color"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.02 0.12 0.02"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="0.02"/>
+
+            <inertia
+                ixx="0.0000247"
+                ixy="0"
+                ixz="0"
+                iyy="0.00000133"
+                iyz="0"
+                izz="0.0000247"/>
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_bumper_joint" type="fixed">
+
+        <parent link="base_link"/>
+        <child link="front_bumper_link"/>
+
+        <origin xyz="0.11 0 0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- REAR BUMPER                                            -->
+    <!-- ====================================================== -->
+
+    <link name="rear_bumper_link">
+
+        <visual>
+            <geometry>
+                <box size="0.02 0.12 0.02"/>
+            </geometry>
+
+            <material name="body_color"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.02 0.12 0.02"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="0.02"/>
+
+            <inertia
+                ixx="0.0000247"
+                ixy="0"
+                ixz="0"
+                iyy="0.00000133"
+                iyz="0"
+                izz="0.0000247"/>
+        </inertial>
+
+    </link>
+
+
+    <joint name="rear_bumper_joint" type="fixed">
+
+        <parent link="base_link"/>
+        <child link="rear_bumper_link"/>
+
+        <origin xyz="-0.11 0 0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT LEFT STEERING                                    -->
+    <!-- ====================================================== -->
+
+    <link name="front_left_steer_link">
+
+        <visual>
+            <geometry>
+                <box size="0.015 0.015 0.015"/>
+            </geometry>
+
+            <material name="steer_color"/>
+        </visual>
+
+        <inertial>
+            <mass value="0.01"/>
+
+            <inertia
+                ixx="0.000000375"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000375"
+                iyz="0"
+                izz="0.000000375"/>
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_left_steer_joint" type="revolute">
+
+        <parent link="base_link"/>
+        <child link="front_left_steer_link"/>
+
+        <!--
+            x = +80 mm
+            y = +65 mm
+            z = -20 mm
+        -->
+        <origin xyz="0.08 0.065 -0.02"/>
+
+        <!-- Z축 조향 -->
+        <axis xyz="0 0 1"/>
+
+        <!-- +-30 degree -->
+        <limit
+            lower="-0.5236"
+            upper="0.5236"
+            effort="5.0"
+            velocity="2.0"/>
+
+        <dynamics
+            damping="0.0"
+            friction="0.0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT LEFT WHEEL                                       -->
+    <!-- ====================================================== -->
+
+    <link name="front_left_wheel_link">
+
+        <visual>
+
+            <!--
+                cylinder 기본 축 = Z
+                roll 90도
+                → 바퀴 축을 Y 방향으로 변경
+            -->
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+            <material name="wheel_color"/>
+
+        </visual>
+
+
+        <collision>
+
+            <geometry>
+                <sphere radius="0.03"/>
+            </geometry>
+
+        </collision>
+
+
+        <inertial>
+
+            <mass value="0.05"/>
+
+            <!-- cylinder axis = Y -->
+            <inertia
+                ixx="0.0000129"
+                ixy="0"
+                ixz="0"
+                iyy="0.0000225"
+                iyz="0"
+                izz="0.0000129"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_left_wheel_joint"
+           type="continuous">
+
+        <parent link="front_left_steer_link"/>
+        <child link="front_left_wheel_link"/>
+
+        <origin xyz="0 0 0"/>
+
+        <!-- 바퀴 회전축 -->
+        <axis xyz="0 1 0"/>
+
+        <limit
+            effort="10.0"
+            velocity="50.0"/>
+
+        <dynamics
+            damping="0.0"
+            friction="0.0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT RIGHT STEERING                                   -->
+    <!-- ====================================================== -->
+
+    <link name="front_right_steer_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.015 0.015 0.015"/>
+            </geometry>
+
+            <material name="steer_color"/>
+
+        </visual>
+
+        <inertial>
+
+            <mass value="0.01"/>
+
+            <inertia
+                ixx="0.000000375"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000375"
+                iyz="0"
+                izz="0.000000375"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_right_steer_joint"
+           type="revolute">
+
+        <parent link="base_link"/>
+        <child link="front_right_steer_link"/>
+
+        <origin xyz="0.08 -0.065 -0.02"/>
+
+        <axis xyz="0 0 1"/>
+
+        <limit
+            lower="-0.5236"
+            upper="0.5236"
+            effort="5.0"
+            velocity="2.0"/>
+
+        <dynamics
+            damping="0.0"
+            friction="0.0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT RIGHT WHEEL                                      -->
+    <!-- ====================================================== -->
+
+    <link name="front_right_wheel_link">
+
+        <visual>
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+            <material name="wheel_color"/>
+
+        </visual>
+
+
+        <collision>
+
+            <geometry>
+                <sphere radius="0.03"/>
+            </geometry>
+
+        </collision>
+
+
+        <inertial>
+
+            <mass value="0.05"/>
+
+            <inertia
+                ixx="0.0000129"
+                ixy="0"
+                ixz="0"
+                iyy="0.0000225"
+                iyz="0"
+                izz="0.0000129"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_right_wheel_joint"
+           type="continuous">
+
+        <parent link="front_right_steer_link"/>
+        <child link="front_right_wheel_link"/>
+
+        <origin xyz="0 0 0"/>
+
+        <axis xyz="0 1 0"/>
+
+        <limit
+            effort="10.0"
+            velocity="50.0"/>
+
+        <dynamics
+            damping="0.0"
+            friction="0.0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- REAR LEFT WHEEL                                        -->
+    <!--                                                        -->
+    <!-- 조향 Joint 없음                                        -->
+    <!-- ====================================================== -->
+
+    <link name="rear_left_wheel_link">
+
+        <visual>
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+            <material name="wheel_color"/>
+
+        </visual>
+
+
+        <collision>
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+        </collision>
+
+
+        <inertial>
+
+            <mass value="0.05"/>
+
+            <inertia
+                ixx="0.0000129"
+                ixy="0"
+                ixz="0"
+                iyy="0.0000225"
+                iyz="0"
+                izz="0.0000129"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="rear_left_wheel_joint"
+           type="continuous">
+
+        <parent link="base_link"/>
+        <child link="rear_left_wheel_link"/>
+
+        <origin xyz="-0.08 0.065 -0.02"/>
+
+        <axis xyz="0 1 0"/>
+
+        <limit
+            effort="20.0"
+            velocity="50.0"/>
+
+        <dynamics
+            damping="0.01"
+            friction="0.01"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- REAR RIGHT WHEEL                                       -->
+    <!--                                                        -->
+    <!-- 조향 Joint 없음                                        -->
+    <!-- ====================================================== -->
+
+    <link name="rear_right_wheel_link">
+
+        <visual>
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+            <material name="wheel_color"/>
+
+        </visual>
+
+
+        <collision>
+
+            <origin xyz="0 0 0"
+                    rpy="1.5708 0 0"/>
+
+            <geometry>
+                <cylinder
+                    radius="0.03"
+                    length="0.02"/>
+            </geometry>
+
+        </collision>
+
+
+        <inertial>
+
+            <mass value="0.05"/>
+
+            <inertia
+                ixx="0.0000129"
+                ixy="0"
+                ixz="0"
+                iyy="0.0000225"
+                iyz="0"
+                izz="0.0000129"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="rear_right_wheel_joint"
+           type="continuous">
+
+        <parent link="base_link"/>
+        <child link="rear_right_wheel_link"/>
+
+        <origin xyz="-0.08 -0.065 -0.02"/>
+
+        <axis xyz="0 1 0"/>
+
+        <limit
+            effort="20.0"
+            velocity="50.0"/>
+
+        <dynamics
+            damping="0.01"
+            friction="0.01"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- CAMERA                                                 -->
+    <!-- ====================================================== -->
+
+    <link name="camera_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.03 0.04 0.02"/>
+            </geometry>
+
+            <material name="camera_color"/>
+
+        </visual>
+
+
+        <inertial>
+
+            <mass value="0.02"/>
+
+            <inertia
+                ixx="0.00000333"
+                ixy="0"
+                ixz="0"
+                iyy="0.00000217"
+                iyz="0"
+                izz="0.00000417"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="camera_joint"
+           type="fixed">
+
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+
+        <!--
+            base_link를 지면에서 50mm 높이로 spawn하면
+            카메라 상단 높이가 약 120mm
+        -->
+        <origin xyz="0.06 0 0.06"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- FRONT ToF                                              -->
+    <!-- ====================================================== -->
+
+    <link name="front_tof_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.01 0.02 0.015"/>
+            </geometry>
+
+            <material name="tof_front_color"/>
+
+        </visual>
+
+
+        <inertial>
+
+            <mass value="0.005"/>
+
+            <inertia
+                ixx="0.000000260"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000135"
+                iyz="0"
+                izz="0.000000208"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="front_tof_joint"
+           type="fixed">
+
+        <parent link="base_link"/>
+        <child link="front_tof_link"/>
+
+        <origin xyz="0.12 0 0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- LEFT ToF                                               -->
+    <!-- ====================================================== -->
+
+    <link name="left_tof_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.015 0.01 0.015"/>
+            </geometry>
+
+            <material name="tof_side_color"/>
+
+        </visual>
+
+
+        <inertial>
+
+            <mass value="0.005"/>
+
+            <inertia
+                ixx="0.000000135"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000188"
+                iyz="0"
+                izz="0.000000135"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="left_tof_joint"
+           type="fixed">
+
+        <parent link="base_link"/>
+        <child link="left_tof_link"/>
+
+        <origin xyz="0.02 0.065 0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- RIGHT ToF                                              -->
+    <!-- ====================================================== -->
+
+    <link name="right_tof_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.015 0.01 0.015"/>
+            </geometry>
+
+            <material name="tof_side_color"/>
+
+        </visual>
+
+
+        <inertial>
+
+            <mass value="0.005"/>
+
+            <inertia
+                ixx="0.000000135"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000188"
+                iyz="0"
+                izz="0.000000135"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="right_tof_joint"
+           type="fixed">
+
+        <parent link="base_link"/>
+        <child link="right_tof_link"/>
+
+        <origin xyz="0.02 -0.065 0"/>
+
+    </joint>
+
+
+    <!-- ====================================================== -->
+    <!-- IMU                                                    -->
+    <!-- ====================================================== -->
+
+    <link name="imu_link">
+
+        <visual>
+
+            <geometry>
+                <box size="0.02 0.02 0.01"/>
+            </geometry>
+
+            <material name="imu_color"/>
+
+        </visual>
+
+
+        <inertial>
+
+            <mass value="0.005"/>
+
+            <inertia
+                ixx="0.000000208"
+                ixy="0"
+                ixz="0"
+                iyy="0.000000208"
+                iyz="0"
+                izz="0.000000333"/>
+
+        </inertial>
+
+    </link>
+
+
+    <joint name="imu_joint"
+           type="fixed">
+
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+
+        <origin xyz="0 0 0.025"/>
+
+    </joint>
+
+    <link name="camera_support_link">
+
+        <visual>
+            <origin xyz="0 0 0"/>
+
+            <geometry>
+                <!--
+                    15 mm x 15 mm x 30 mm
+                    세로 지지대
+                -->
+                <box size="0.015 0.015 0.03"/>
+            </geometry>
+
+            <material name="body_color"/>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0"/>
+
+            <geometry>
+                <box size="0.015 0.015 0.03"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <origin xyz="0 0 0"/>
+
+            <mass value="0.01"/>
+
+            <inertia
+                ixx="0.0000009375"
+                ixy="0"
+                ixz="0"
+                iyy="0.0000009375"
+                iyz="0"
+                izz="0.000000375"/>
+        </inertial>
+
+    </link>
+
+    <joint name="camera_support_joint" type="fixed">
+
+        <parent link="base_link"/>
+        <child link="camera_support_link"/>
+
+        <origin
+            xyz="0.06 0 0.035"
+            rpy="0 0 0"/>
+
+    </joint>
+</robot>

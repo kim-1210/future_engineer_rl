@@ -1,0 +1,46 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+venv/
+env/
+
+# Training artifacts (keep locally)
+logs/
+outputs/
+runs/
+wandb/
+checkpoints/
+videos/
+*.pt
+*.pth
+*.onnx
+*.log
+events.out.tfevents.*
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.vscode/
+.idea/
+.DS_Store
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.asset_hash
+
+# Unused legacy USD wrapper with workstation-specific references.
+# The portable vehicle assets live in car_description/urdf/car/.
+/robot/future_engineer_car.usd
